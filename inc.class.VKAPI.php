@@ -2,13 +2,6 @@
 	session_start();
 	error_reporting('E_ALL');
 	ini_set('display_errors','ON');
-	//include_once('db.php');/////////////////////////////////////DATE BASE////////
-	//include_once('cms-belko.php');//////////////////////////////SETTINGS BELKO///
-	//include_once('inc/function.inc.php');///////////////////////FUNCTION/////////
-	//include_once('inc/class.inc.php');//////////////////////////CLASS////////////
-	//define('ROOT', SETTINGS::root());///////////////////////////ROOT/////////////
-	//define('ROOT1', SETTINGS::root1());/////////////////////////ROOT1////////////
-	//include_once('inc/settings.inc.php');///////////////////////SETTINGS/////////
 	
 	class VK{
 		private $__result;
@@ -161,7 +154,7 @@ $vk['redirect_uri'] = 'http://www.fleamarket.moscow/vkapi.php';
 		echo $VK->users('get',array('user_ids'=>'239638833','fields'=>'all'));
 		echo '</pre>';
 		exit;*/
-		if($_GET['code']!=''){
+		/*if($_GET['code']!=''){
 			$token = $VK->getAccessToken($_GET['code'],$vk['redirect_uri'])->json();
 			//$token = $VK->getAccessToken($_GET['code'],$vk['redirect_uri'])->json();
 			print_r($token);
@@ -179,7 +172,7 @@ $vk['redirect_uri'] = 'http://www.fleamarket.moscow/vkapi.php';
 			print_r($VK->users('getSubscriptions', array('user_id'=>$VK->uid(), 'offset'=>'0', 'extended'=>'1', 'count'=>'200', 'fields'=>'1'))->json());
 			print_r($VK->users('getFollowers', array('user_id'=>$VK->uid(), 'offset'=>'0', 'extended'=>'1', 'count'=>'200', 'fields'=>'1'))->json());
 			echo '</pre>###<br>';
-		}
+		}*/
 		//$VK = new VK($vk['app_id'],$vk['api_secret'],$vk['api_secret'],$vk['locale']);
 		//print_r($VK->users('get',query(array('user_ids'=>'113309621','fields'=>'sex,photo_50'))));
 ?>
