@@ -144,8 +144,8 @@
 		/**/
 	}
 
-$vk['app_id'] = '5168448';
-$vk['api_secret'] = 'SsKrU2R2WZiLzMg2MMemkD6K5';
+$vk['app_id'] = 'ID_GROUP';
+$vk['api_secret'] = 'SECRET';
 $vk['locale'] = 'ru';
 $vk['redirect_uri'] = 'http://www.fleamarket.moscow/vkapi.php';
 	$VK = new VK($vk['app_id'],$vk['api_secret'],$vk['locale']);
