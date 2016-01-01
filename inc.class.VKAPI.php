@@ -4,9 +4,9 @@
 	ini_set('display_errors','ON');
 	
 	class VK{
-		private $__result;
-		private $__method;
-		private $__name_method;
+		private $__result;////////\\\\\\\\\\\\\\|
+		private $__method;////////-НЕТРОГАТЬ!!!|
+		private $__name_method;/////////////////|
 		private $app_id;//////////ИД приложения
 		private $api_secret;//////Секретный код приложения
 		private $access_token;////Секретный ТОКЕН
@@ -15,7 +15,7 @@
 		const AUTHORIZE_URL = 'https://oauth.vk.com/authorize';//Урл авторизации
 		const ACCESS_TOKEN_URL = 'https://oauth.vk.com/access_token';//урл токена
 		const URL = 'https://api.vk.com/method/'/*users.get?user_ids=113309621*/;//урл методов
-		const ALL_FIELDS = 'id,first_name,last_name,nickname,sex,bdate,city,country,home_town,photo_50,photo_100,photo_200,photo_200_orig,photo_400_orig,photo_max,photo_max_orig,online,site,education,universities,schools,status,last_seen,connections,screen_name,maiden_name';//все поля для вывода
+		const ALL_FIELDS = 'id,first_name,last_name,nickname,domain,sex,bdate,city,country,home_town,photo_50,photo_100,photo_200,photo_200_orig,photo_400_orig,photo_max,photo_max_orig,online,site,education,universities,schools,status,last_seen,connections,screen_name,maiden_name';//все поля для вывода
 		/*Конструктор*/
 		public function __construct($app_id,$api_secret,$locale){
 			$this->app_id = $app_id;
@@ -91,11 +91,9 @@
 			foreach($query as $key => $value){
 				if($key=='fields' && $value=='all'){
 					$res.= $key.'='.self::ALL_FIELDS.'&';
-				}else /*if($key=='q')*/{
+				}else{
 					$res.= $key.'='.urlencode($value).'&';
-				}/*else{
-					$res.= $key.'='.$value.'&';
-				}*/
+				}
 			}
 			$res = substr($res,0,-1);
 			$href = self::URL.$this->__method.'.'.$this->__name_method.'?'.$res;
@@ -117,6 +115,21 @@
 			}else{echo 'ERROR';}
 		}
 		
+		public function photos($method, $query){
+			$this->__result = null;
+			$this->__method = 'photos';
+			$this->__name_method = $method;
+			
+			$array_name_method = array('get','getUploadServer','save'/*,'getSubscriptions','getFollowers'*/);
+			
+			if(in_array($this->__name_method,$array_name_method)){
+				$query = $this->query($query);
+				$get = file_get_contents($query,false,$this->locale);
+				$this->__result = $get;
+				return $this;
+			}else{echo 'ERROR';}
+		}
+		
 		function token(){
 			if($this->access_token!=''){
 				return $this->access_token;
@@ -124,16 +137,38 @@
 				return $_SESSION['access_token'];
 			}
 		}
+		
 		function uid(){
 			if($this->uid!=''){
 				return $this->uid;
 			}else{
 				return $_SESSION['uid'];
 			}
-		}	
-	
+		}
 		
-		/**/
+		function upload_server($file_array,$upload_url){
+			$this->__result = null;
+			for($i=1;$i<count($file_array)+1;$i++){
+				$data['file'.$i] = '@'.$file_array[$i-1];
+			}
+			$ch = curl_init($upload_url);
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+			$response = curl_exec($ch);
+			$this->__result = $response;
+			curl_close($ch);
+			/*$out['server'] = $response->server;
+			$out['photos_list'] = $response->photos_list;
+			$out['aid'] = $response->aid;
+			$out['gid'] = $response->gid;
+			$out['hash'] = $response->hash;*/
+			return $this;
+		}
+
+	
 		public function json(){
 			return (array)json_decode($this->__result);
 		}
@@ -141,38 +176,5 @@
 		public function __toString(){
 			return $this->__result;
 		}
-		/**/
 	}
-
-$vk['app_id'] = 'ID_GROUP';
-$vk['api_secret'] = 'SECRET';
-$vk['locale'] = 'ru';
-$vk['redirect_uri'] = 'http://www.fleamarket.moscow/vkapi.php';
-	$VK = new VK($vk['app_id'],$vk['api_secret'],$vk['locale']);
-		/*echo '<pre>';
-		print_r($VK->users('get',array('user_ids'=>'239638833','fields'=>'all')));
-		echo $VK->users('get',array('user_ids'=>'239638833','fields'=>'all'));
-		echo '</pre>';
-		exit;*/
-		/*if($_GET['code']!=''){
-			$token = $VK->getAccessToken($_GET['code'],$vk['redirect_uri'])->json();
-			//$token = $VK->getAccessToken($_GET['code'],$vk['redirect_uri'])->json();
-			print_r($token);
-			//echo '///'.$token['access_token'].'///<br>';
-			$VK->setAccessToken($token['access_token']);
-			$VK->setUid($token['user_id']);
-		}else{
-			echo $VK->getAuth($vk['redirect_uri']).'<br>';
-			//echo '+++'.$VK->token().'+++<br>';
-			
-			echo '###<pre>';
-			//print_r($VK->users('get', array('user_ids'=>$VK->uid(),'fields'=>'all','access_token'=>$VK->token()))->json());
-			//print_r($VK->users('isAppUser', array('user_id'=>'124757551','access_token'=>$VK->token()))->json());
-			//print_r($VK->users('search', array('q'=>'Юрий Мошкин','count'=>'5','fields'=>'sex','access_token'=>$VK->token()))->json());
-			print_r($VK->users('getSubscriptions', array('user_id'=>$VK->uid(), 'offset'=>'0', 'extended'=>'1', 'count'=>'200', 'fields'=>'1'))->json());
-			print_r($VK->users('getFollowers', array('user_id'=>$VK->uid(), 'offset'=>'0', 'extended'=>'1', 'count'=>'200', 'fields'=>'1'))->json());
-			echo '</pre>###<br>';
-		}*/
-		//$VK = new VK($vk['app_id'],$vk['api_secret'],$vk['api_secret'],$vk['locale']);
-		//print_r($VK->users('get',query(array('user_ids'=>'113309621','fields'=>'sex,photo_50'))));
 ?>
