@@ -1,7 +1,7 @@
 <?
-	session_start();
-	error_reporting('E_ALL');
-	ini_set('display_errors','ON');
+	session_start();//////////////////////START_SESSION
+	error_reporting('E_ALL');/////////////Вывод ошибок
+	ini_set('display_errors','ON');//\\\\\Вывод ошибок
 	
 	class VK{
 		private $__result;////////\\\\\\\\\\\\\\|
@@ -14,13 +14,13 @@
 		private $locale;//////////Язык отправки на сервер ВК
 		const AUTHORIZE_URL = 'https://oauth.vk.com/authorize';//Урл авторизации
 		const ACCESS_TOKEN_URL = 'https://oauth.vk.com/access_token';//урл токена
-		const URL = 'https://api.vk.com/method/'/*users.get?user_ids=113309621*/;//урл методов
+		const URL = 'https://api.vk.com/method/';//урл методов
 		const ALL_FIELDS = 'id,first_name,last_name,nickname,domain,sex,bdate,city,country,home_town,photo_50,photo_100,photo_200,photo_200_orig,photo_400_orig,photo_max,photo_max_orig,online,site,education,universities,schools,status,last_seen,connections,screen_name,maiden_name';//все поля для вывода
 		/*Конструктор*/
 		public function __construct($app_id,$api_secret,$locale){
 			$this->app_id = $app_id;
 			$this->api_secret = $api_secret;
-			$this->scope = 'friends,photos,audio,video,docs,notes,status,groups,email,notifications,stats,ads,offline';
+			$this->scope = 'friends,photos,audio,video,docs,notes,pages,status,wall,groups,email,notifications,stats,ads,market,offline';//messages,
 			if($locale=='ru'){
 				$opts = array(
 					'http'=>array(
@@ -120,7 +120,7 @@
 			$this->__method = 'photos';
 			$this->__name_method = $method;
 			
-			$array_name_method = array('get','getUploadServer','save'/*,'getSubscriptions','getFollowers'*/);
+			$array_name_method = array('get','getUploadServer','save');
 			
 			if(in_array($this->__name_method,$array_name_method)){
 				$query = $this->query($query);
@@ -160,11 +160,6 @@
 			$response = curl_exec($ch);
 			$this->__result = $response;
 			curl_close($ch);
-			/*$out['server'] = $response->server;
-			$out['photos_list'] = $response->photos_list;
-			$out['aid'] = $response->aid;
-			$out['gid'] = $response->gid;
-			$out['hash'] = $response->hash;*/
 			return $this;
 		}
 
